@@ -15,14 +15,7 @@
         function onDeviceReady() {
             //called functions check status db
             db.transaction(populateDB, errorDB, SuccessDB);
-            if (typeof (Storage) !== "undefined") {
-                localStorage.deviceid = device.uuid;
-                document.getElementById("result").innerHTML = "your device's UUID:" + localStorage.deviceid;
-            }
-            else {
-                document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
-            }
-
+            
         }
         //check status for db
         function populateDB(query) {
@@ -85,20 +78,10 @@
 <body onload="onLoad()">
     <p id="result" style="margin:5px;color:#808080; font-weight:bold;"></p>
     <div id="usertable">
-        <table style="column-span:all;">
-                <tr>
-                    <td>ID</td>
-                    <td>Email</td>
-                    <td>UUID</td>
-                    <td>Device Name</td>
-                    <td>Platform</td>
-                    <td>Device version</td>
-					<td>Status</td>
-                </tr>
-
-            </table>
-        <p style="margin:5px; color:#808080; font-weight:bold;"></p>
+       
+        
     </div>
+	<p style="margin:5px; color:#808080; font-weight:bold;"></p>
     <div id="forminput">
         <form id="fv1" action="#" method="post">
             <table>
