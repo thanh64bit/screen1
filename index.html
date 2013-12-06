@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+        // Wait for device API libraries to load
+        //
+        document.addEventListener("deviceready", onDeviceReady, false);
+        //create SLQ db
+        var db = window.openDatabase("User_DB", "1.0", "UserDB", 200000);
+        // device APIs are available
+        //
+        function onDeviceReady() {
+            //called functions check status db
+            db.transaction(populateDB, errorDB, SuccessDB);
+            if (typeof (Storage) !== "undefined") {
+                localStorage.deviceid = device.uuid;
+                document.getElementById("result").innerHTML = "your device's UUID:" + localStorage.deviceid;
+            }
+            else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support web storage...";
+            }
+
+        }
+        //check status for db
+        function populateDB(query) {
+            query.executeSql('Create table if not exist UserDevice int primarykey autoincrement, Email TEXT NULL DEFAULT "john",UUID TEXT NULL DEFAULT "00000", DeviceName TEXT NULL DEFAULT "Lumia", Platform TEXT NULL DEFAULT "WP8", DeviceVersion TEXT NULL DEFAULT "8.0",Status INTEGER' DEFAULT 1);
+            query.executeSql('insert into UserDevice(Email,UUID,DeviceName,Platform,DeviceVersion,Status) values("",localStorage.deviceid,device.model,device.platform,device.version,0)');
+            
+        }
+		//query data
+		function queryDB(tx){
+        tx.executeSql('SELECT * FROM UserDevice',[],querySuccessful,errorDB);
+		}
+		// fetch data to view
+		function querySuccessful(tx,result){
+        $('#usertable').empty();
+		$('#usertable').append=" <table style='column-span:all;'><tr><td>ID</td><td>Email</td><td>UUID</td><td>Device Name</td><td>Platform</td><td>Device version</td><td>Status</td></tr>";
+        $.each(result.rows,function(index){
+            var row = result.rows.item(index);
+            $('#usertable').append('<tr><td>'+row['Email']+'</td><td>'+row['UUID']+'</td><td>'+row['DeviceName']+'</td><td>'+row['Platform']+'</td><td>'+row['DeviceVersion']+'</td><td>'+row['Status']+'</td></tr>');
+        });
+		$('#usertable').append('</table>');
+        $('#usertable').listview();
+    }
+        function errorDB(err) {
+            alert("Error processing db:" + err.code);}
+        function SuccessDB() {
+            alert("Successful!");
+            db.transaction(queryDB,errorDB);
+        }
+        //check conection status when load app body
+        function onLoad() {
+            document.addEventListener("online", onOnline, false);
+
+        }
+        //handle the online event
+        function onOnline() {
+
+        }
+        //
+        function checkConnec() {
+            if (navigator.network.connection.type == Connection.NONE) {
+                alert('Geen internet :()');
+            }
+            else {
+                // nothing
+            }
+        }
+        
+        //han
+
+        function ExecJS() {
+            var element = document.getElementById('deviceProperties');
+            element.innerHTML = 'Device Model: ' + device.model + '<br />' +
+                                'Device Platform: ' + device.platform + '<br />' +
+                                'Device UUID: ' + device.uuid + '<br />' +
+                                'Device Version: ' + device.version + '<br />';
+        }
+
+    </script>
+</head>
+<body onload="onLoad()">
+    <p id="result" style="margin:5px;color:#808080; font-weight:bold;"></p>
+    <div id="usertable">
+        <table style="column-span:all;">
+                <tr>
+                    <td>ID</td>
+                    <td>Email</td>
+                    <td>UUID</td>
+                    <td>Device Name</td>
+                    <td>Platform</td>
+                    <td>Device version</td>
+					<td>Status</td>
+                </tr>
+
+            </table>
+        <p style="margin:5px; color:#808080; font-weight:bold;"></p>
+    </div>
+    <div id="forminput">
+        <form id="fv1" action="#" method="post">
+            <table>
+                <tr>
+                    <th>Email:</th>
+                    <td><input type="text" id="email" /></td>
+                    <td><input type="button" id="btnsubmit" value="Confirm" onclick="javascript: ExecJS();"/></td>
+                </tr>
+
+            </table>
+
+        </form>
+
+    </div>
+</body>
+</html>
