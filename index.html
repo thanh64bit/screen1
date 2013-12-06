@@ -14,6 +14,11 @@
         //
         function onDeviceReady() {
             //called functions check status db
+             var element = document.getElementById('usertable');
+            element.innerHTML = 'Device Model: ' + device.model + '<br />' +
+                                'Device Platform: ' + device.platform + '<br />' +
+                                'Device UUID: ' + device.uuid + '<br />' +
+                                'Device Version: ' + device.version + '<br />';
             db.transaction(populateDB, errorDB, SuccessDB);
             
         }
